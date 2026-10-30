@@ -73,15 +73,12 @@ public class BankAccountService {
         }
         return "account not found";
     }
-
     // get balace by account number
     public double getBalance(long accountNumber) {
         Optional<BankCustomer> customer =bankDBRepository.findById(accountNumber);
-
         if (customer.isPresent()) {
             return customer.get().getBalance();
         }
-
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found"
         );
     }
@@ -151,10 +148,8 @@ public class BankAccountService {
 
         return "Withdrawal successful. New balance: " + newBalance;
     }
-
     // Validate deposit and withdrawal amounts
     private void validateAmount(double amount) {
-
         if (!Double.isFinite(amount) || amount <= 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Amount must be greater than zero"
             );
