@@ -1,5 +1,4 @@
 package com.example.demo.service;
-
 import com.example.demo.model.BankCustomer;
 import com.example.demo.repository.BankDBRepository;
 import org.springframework.http.HttpStatus;
@@ -9,64 +8,45 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
-
 @Service
 public class BankAccountService {
-
     TransactionService transactionService;
     BankDBRepository bankDBRepository;
-
     public BankAccountService(BankDBRepository bankDBRepository, TransactionService transactionService){
         this.bankDBRepository =bankDBRepository;
         this.transactionService = transactionService;
     }
-
-
     //  Account creation
     public BankCustomer createAccount(BankCustomer customer) {
-
         if (bankDBRepository.existsById(customer.getAccountNumber())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Account already exists");
         }
-
         return bankDBRepository.save(customer);
     }
-
-
-
     //Get aLl Account
     public List<BankCustomer> getAllAccounts(){
         return bankDBRepository.findAll();
     }
-
-
     //Find account by account numbers
-
     public Optional<BankCustomer> findByID(Long accountNumber){
         return bankDBRepository.findById(accountNumber);
     }
-
-
     //update account details
     public String updateAccount(BankCustomer newCustomer){
         Optional<BankCustomer> obj=findByID(newCustomer.getAccountNumber());
         if(obj.isPresent()){
             BankCustomer existingCustomer=obj.get();
-
             existingCustomer.setName(newCustomer.getName());
             existingCustomer.setPhoneNumber(newCustomer.getPhoneNumber());
           //  existingCustomer.setName(newCustomer.getName());
-
             bankDBRepository.save(existingCustomer);
             return "Account updated successfully";
         }
         return "Account not found";
     }
-
     // Delete by Account Number
     public String deleteAccount(long accountNumber){
         Optional<BankCustomer> obj=findByID(accountNumber);
-
         if(obj.isPresent()){
             bankDBRepository.delete(obj.get());
             return "Account deleted successfully";
